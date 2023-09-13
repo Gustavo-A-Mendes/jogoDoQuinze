@@ -1,15 +1,18 @@
+#define _OPEN_SYS_ITOA_EXT
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
 #include "quinze.h"
 
 struct quinze
 {
     int lin;
     int col;
-    char valor;
+    char valor[3];
 };
-
 
 Quinze **cria_jogo(int dimensao)
 {
@@ -25,7 +28,7 @@ Quinze **cria_jogo(int dimensao)
         {
             jogo[i][j].lin = i;
             jogo[i][j].col = j;
-            jogo[i][j].valor = ' ';
+            strcpy(jogo[i][j].valor, " ");
         }
         
     }
@@ -33,33 +36,56 @@ Quinze **cria_jogo(int dimensao)
     return jogo;
 }
 
-void ramdomiza(Quinze *mat)
+void randomiza(Quinze **matriz, int dimensao)
 {
-    int i, j;
-    for (i = 0; i < mat->lin; i++) {
-        free(mat->v[i]);
+    srand(time(0));
+    int i = 0, j, igual;
+    int *valores = (int*)calloc((dimensao*dimensao), sizeof(int));
+    while (i < (dimensao*dimensao-1))
+    {   
+        igual = 0;
+        int valor_rand = (rand() % (dimensao*dimensao - 1)) + 1;
+        for (j = 0; j < i; j++)
+        {
+            if (valor_rand == valores[j]) {
+                igual = 1;
+                break;
+            }
+
+        }
+        if (igual == 0) {
+            valores[i] = valor_rand;
+            i++;
+        }
     }
-    free(mat->v);
-    free(mat);
+
+    for (i = 0; i < dimensao; i++)
+    {
+        for (j = 0; j < dimensao; j++)
+        {   
+            sprintf(matriz[i][j].valor, "%d", valores[i*dimensao + j]);
+        }        
+    }
+
+    // for (i = 0; i < dimensao*dimensao; i++)
+    // {
+    //     printf("%d\n", valores[i]);
+    // }
+    
 }
 
-float matV_acessa(Quinze *mat, int i, int j)
-{
-    return mat->v[i][j];
-
-}
-
-void matV_atribui(Quinze *mat, int i, int j, float v)
-{
-    mat->v[i][j] = v;
-}
-
-int matV_linhas(Quinze *mat)
-{
-    return mat->lin;
-}
-
-int matV_colunas(Quinze *mat)
-{
-    return mat->col;
+int main(void) {
+    int n = 4;
+    Quinze **jogo = cria_jogo(n);
+    randomiza(jogo, n);
+    int i, j;
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            printf("%s\t", jogo[i][j].valor);
+        }
+        printf("\n\n");
+    }
+    return 0;
 }
