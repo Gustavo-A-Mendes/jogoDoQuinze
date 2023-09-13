@@ -63,10 +63,15 @@ void randomiza(Quinze **matriz, int dimensao)
     {
         for (j = 0; j < dimensao; j++)
         {   
-            sprintf(matriz[i][j].valor, "%d", valores[i*dimensao + j]);
+            if(j != dimensao - 1 || i < dimensao - 1){
+                sprintf(matriz[i][j].valor, "%d", valores[i*dimensao + j]);
+            }else{
+                sprintf(matriz[i][j].valor, "%s", " ");
+            }
         }        
     }
-
+    // char espaco[3] = {' '};
+    // matriz[i][j].valor =  espaco;
     // for (i = 0; i < dimensao*dimensao; i++)
     // {
     //     printf("%d\n", valores[i]);
@@ -81,11 +86,18 @@ int main(void) {
     int i, j;
     for (i = 0; i < n; i++)
     {
+        printf("|");
         for (j = 0; j < n; j++)
         {
-            printf("%s\t", jogo[i][j].valor);
+            if(j < n - 1){
+                printf("%s\t", jogo[i][j].valor);
+            }else if(strlen(jogo[i][j].valor) == 1){
+                printf("%s |", jogo[i][j].valor);
+            }else{
+                printf("%s|", jogo[i][j].valor);
+            }
         }
-        printf("\n\n");
+        printf("\n");
     }
     return 0;
 }
