@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "quinze.h": "c"
+        "quinze.h": "c",
+        "ctype.h": "c"
     }
 }
