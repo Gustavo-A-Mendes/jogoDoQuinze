@@ -39,3 +39,10 @@ void movimento(Quinze **matriz, Quinze *vazio, int dimensao, char movimento);
 
 */
 int verifica_resultado(Quinze **matriz, int dimensao);
+
+
+int gabarito(Quinze **matriz, Quinze **resposta, int dimensao);
+
+
+void gera_resposta(Quinze **matriz, Quinze **resposta, int dimensao);
+

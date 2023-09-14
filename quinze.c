@@ -28,7 +28,11 @@ Quinze **cria_jogo(int dimensao)
         {
             jogo[i][j].lin = i;
             jogo[i][j].col = j;
-            strcpy(jogo[i][j].valor, " ");
+            if ((i == (dimensao-1) && j == (dimensao-1)))
+                sprintf(jogo[i][j].valor, "%s", " ");
+            else
+                sprintf(jogo[i][j].valor, "%d", ((i * dimensao + j) + 1));
+
         }
     }
 
@@ -38,47 +42,23 @@ Quinze **cria_jogo(int dimensao)
 void randomiza(Quinze **matriz, int dimensao)
 {
     srand(time(0));
-    int i = 0, j, igual;
-    int *valores = (int *)calloc((dimensao * dimensao), sizeof(int));
-    while (i < (dimensao * dimensao - 1))
-    {
-        igual = 0;
-        int valor_rand = (rand() % (dimensao * dimensao - 1)) + 1;
-        for (j = 0; j < i; j++)
-        {
-            if (valor_rand == valores[j])
-            {
-                igual = 1;
-                break;
-            }
-        }
-        if (igual == 0)
-        {
-            valores[i] = valor_rand;
-            i++;
-        }
-    }
 
-    for (i = 0; i < dimensao; i++)
-    {
-        for (j = 0; j < dimensao; j++)
-        {
-            if (valores[i * dimensao + j] != 0)
-            {
-                sprintf(matriz[i][j].valor, "%d", valores[i * dimensao + j]);
-            }
-            else
-            {
-                sprintf(matriz[i][j].valor, "%s", " ");
+    int jogada_anterior = 0;
+    int teclas[4] = {'w', 'a', 'd', 's'};
+    Quinze *vaz = (Quinze *)malloc(sizeof(Quinze));
+    int ale;
+    for (ale = 0; ale < 200;) {
+        int mov_rand = (rand() % 4);
+        
+        if (mov_rand != jogada_anterior) {
+            posicao_vazio(matriz, dimensao, &vaz->lin, &vaz->col);
+            if (verifica(vaz, dimensao, teclas[mov_rand])) {
+                movimento(matriz, vaz, dimensao, teclas[mov_rand]);
+                jogada_anterior = mov_rand;
+                ale++;
             }
         }
     }
-    // char espaco[3] = {' '};
-    // matriz[i][j].valor =  espaco;
-    // for (i = 0; i < dimensao*dimensao; i++)
-    // {
-    //     printf("%d\n", valores[i]);
-    // }
 }
 
 int compara(char *base, char *comparacao)
@@ -109,7 +89,7 @@ int verifica(Quinze *vazio, int dimensao, char movimento)
         case 'w': // para cima
             if (vazio->lin == (dimensao - 1))
             {
-                printf("..g.");
+                // printf("..g.");
                 return 0;
             }
             break;
@@ -117,7 +97,7 @@ int verifica(Quinze *vazio, int dimensao, char movimento)
         case 'a': // para a esquerda
             if (vazio->col == (dimensao - 1))
             {
-                printf("...");
+                // printf("...");
                 return 0;
             }
             break;
@@ -125,7 +105,7 @@ int verifica(Quinze *vazio, int dimensao, char movimento)
         case 'd': // para a direita
             if (vazio->col == 0)
             {
-                printf("...");
+                // printf("...");
                 return 0;
             }
             break;
@@ -133,7 +113,7 @@ int verifica(Quinze *vazio, int dimensao, char movimento)
         case 's': // para baixo
             if (vazio->lin == 0)
             {
-                printf("..");
+                // printf("..");
                 return 0;
             }
             break;
@@ -145,83 +125,99 @@ int verifica(Quinze *vazio, int dimensao, char movimento)
 void movimento(Quinze **matriz, Quinze *vazio, int dimensao, char movimento)
 {
     Quinze *auxiliar = (Quinze *)calloc(1, sizeof(Quinze));
-    if (verifica(vazio, dimensao, movimento))
+    // if (verifica(vazio, dimensao, movimento))
+    // {
+    switch (movimento)
     {
-        switch (movimento)
-        {
-        case 'w':
-            // armazena o valor vazio:
-            strcpy(auxiliar->valor, vazio->valor);
-            auxiliar->col = vazio->col;
-            auxiliar->lin = vazio->lin;
-            // move a peça de baixo para a posição acima, onde estava estava o vazio:
-            strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin + 1)][vazio->col].valor);
-            matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin + 1)][auxiliar->col].lin;
-            matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin + 1)][auxiliar->col].col;
-            // move o vazio para a posição da peça movida:
-            strcpy(matriz[(vazio->lin + 1)][vazio->col].valor, " ");
-            matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
-            matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
-            break;
+    case 'w':
+        // armazena o valor vazio:
+        strcpy(auxiliar->valor, vazio->valor);
+        auxiliar->col = vazio->col;
+        auxiliar->lin = vazio->lin;
+        // move a peça de baixo para a posição acima, onde estava estava o vazio:
+        strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin + 1)][vazio->col].valor);
+        matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin + 1)][auxiliar->col].lin;
+        matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin + 1)][auxiliar->col].col;
+        // move o vazio para a posição da peça movida:
+        strcpy(matriz[(vazio->lin + 1)][vazio->col].valor, " ");
+        matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
+        matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
+        break;
 
-        case 'a':
-            // armazena o valor vazio:
-            strcpy(auxiliar->valor, vazio->valor);
-            auxiliar->col = vazio->col;
-            auxiliar->lin = vazio->lin;
-            // move a peça de baixo para a posição acima, onde estava estava o vazio:
-            strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin)][vazio->col + 1].valor);
-            matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin)][auxiliar->col + 1].lin;
-            matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin)][auxiliar->col + 1].col;
-            // move o vazio para a posição da peça movida:
-            strcpy(matriz[(vazio->lin)][vazio->col + 1].valor, " ");
-            matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
-            matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
-            break;
+    case 'a':
+        // armazena o valor vazio:
+        strcpy(auxiliar->valor, vazio->valor);
+        auxiliar->col = vazio->col;
+        auxiliar->lin = vazio->lin;
+        // move a peça de baixo para a posição acima, onde estava estava o vazio:
+        strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin)][vazio->col + 1].valor);
+        matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin)][auxiliar->col + 1].lin;
+        matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin)][auxiliar->col + 1].col;
+        // move o vazio para a posição da peça movida:
+        strcpy(matriz[(vazio->lin)][vazio->col + 1].valor, " ");
+        matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
+        matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
+        break;
 
-        case 'd':
-            // armazena o valor vazio:
-            strcpy(auxiliar->valor, vazio->valor);
-            auxiliar->col = vazio->col;
-            auxiliar->lin = vazio->lin;
-            // move a peça de baixo para a posição acima, onde estava estava o vazio:
-            strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin)][vazio->col - 1].valor);
-            matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin)][auxiliar->col - 1].lin;
-            matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin)][auxiliar->col - 1].col;
-            // move o vazio para a posição da peça movida:
-            strcpy(matriz[(vazio->lin)][vazio->col - 1].valor, " ");
-            matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
-            matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
-            break;
+    case 'd':
+        // armazena o valor vazio:
+        strcpy(auxiliar->valor, vazio->valor);
+        auxiliar->col = vazio->col;
+        auxiliar->lin = vazio->lin;
+        // move a peça de baixo para a posição acima, onde estava estava o vazio:
+        strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin)][vazio->col - 1].valor);
+        matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin)][auxiliar->col - 1].lin;
+        matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin)][auxiliar->col - 1].col;
+        // move o vazio para a posição da peça movida:
+        strcpy(matriz[(vazio->lin)][vazio->col - 1].valor, " ");
+        matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
+        matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
+        break;
 
-        case 's':
-            strcpy(auxiliar->valor, vazio->valor);
-            auxiliar->col = vazio->col;
-            auxiliar->lin = vazio->lin;
+    case 's':
+        strcpy(auxiliar->valor, vazio->valor);
+        auxiliar->col = vazio->col;
+        auxiliar->lin = vazio->lin;
 
-            strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin - 1)][vazio->col].valor);
-            matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin - 1)][auxiliar->col].lin;
-            matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin - 1)][auxiliar->col].col;
+        strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin - 1)][vazio->col].valor);
+        matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin - 1)][auxiliar->col].lin;
+        matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin - 1)][auxiliar->col].col;
 
-            strcpy(matriz[(vazio->lin - 1)][vazio->col].valor, " ");
-            matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
-            matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
-            break;
+        strcpy(matriz[(vazio->lin - 1)][vazio->col].valor, " ");
+        matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
+        matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
+        break;
+    }
+    // }
+    // else
+    // {
+    //     printf("Jogada invalida\n");
+    // }
+    free(auxiliar);
+}
+
+int gabarito(Quinze **matriz, Quinze **resposta, int dimensao)
+{
+    int i, j;
+    for (i = 0; i < dimensao; i++) {
+        for (j = 0; j < dimensao; j++) {
+            if (compara(matriz[i][j].valor, resposta[i][j].valor) != 0)
+                return 0;
         }
     }
-    else
-    {
-        printf("Jogada invalida\n");
-    }
-    free(auxiliar);
+    return 1;
 }
 
 int main(void)
 {
-    int dimensao = 5;
+    int dimensao = 3;
     Quinze *vazio = (Quinze *)malloc(sizeof(Quinze));
     Quinze **jogo = cria_jogo(dimensao);
+    Quinze **resposta = cria_jogo(dimensao);
     randomiza(jogo, dimensao);
+
+    system("cls");
+
     int i, j;
     for (i = 0; i < dimensao; i++)
     {
@@ -244,16 +240,10 @@ int main(void)
         printf("\n");
     }
 
+
     posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
     printf("linha: %d coluna: %d\n", vazio->lin, vazio->col);
-
-    char mov[2];
-    printf("Numero: ");
-    scanf(" %1[^\n]", mov);
-    while(getchar() != '\n');
-
-    movimento(jogo, vazio, dimensao, mov[0]);
-
+    
     for (i = 0; i < dimensao; i++)
     {
         printf("|");
@@ -261,20 +251,48 @@ int main(void)
         {
             if (j < dimensao - 1)
             {
-                printf("%s\t", jogo[i][j].valor);
+                printf("%s\t", resposta[i][j].valor);
             }
-            else if (strlen(jogo[i][j].valor) == 1)
+            else if (strlen(resposta[i][j].valor) == 1)
             {
-                printf("%s |", jogo[i][j].valor);
+                printf("%s |", resposta[i][j].valor);
             }
             else
             {
-                printf("%s|", jogo[i][j].valor);
+                printf("%s|", resposta[i][j].valor);
             }
         }
         printf("\n");
     }
-    while (mov[0] != 'x')
+
+    char mov[2];
+    // printf("Numero: ");
+    // scanf(" %1[^\n]", mov);
+    // while(getchar() != '\n');
+
+    // movimento(jogo, vazio, dimensao, mov[0]);
+
+    // for (i = 0; i < dimensao; i++)
+    // {
+    //     printf("|");
+    //     for (j = 0; j < dimensao; j++)
+    //     {
+    //         if (j < dimensao - 1)
+    //         {
+    //             printf("%s\t", jogo[i][j].valor);
+    //         }
+    //         else if (strlen(jogo[i][j].valor) == 1)
+    //         {
+    //             printf("%s |", jogo[i][j].valor);
+    //         }
+    //         else
+    //         {
+    //             printf("%s|", jogo[i][j].valor);
+    //         }
+    //     }
+    //     printf("\n");
+    // }
+    do
     {
 
         printf("Numero: ");
@@ -285,7 +303,9 @@ int main(void)
         system("cls");
         
         posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
-        movimento(jogo, vazio, dimensao, mov[0]);
+        
+        if (verifica(vazio, dimensao, mov[0]))
+            movimento(jogo, vazio, dimensao, mov[0]);
         
         for (i = 0; i < dimensao; i++)
         {
@@ -307,6 +327,13 @@ int main(void)
             }
             printf("\n");
         }
-    }
+
+        if (gabarito(jogo, resposta, dimensao) == 1) {
+            printf("\nParabens! Vc eh top.\n");
+            break;
+        }
+
+    } while (mov[0] != 'x');
     return 0;
 }
+
