@@ -18,17 +18,22 @@ void randomiza(Quinze **matriz, int dimensao);
 /* Função que verifica movimento
 
 */
-int verifica(int dimensao, int linha, int coluna, int movimento);
+int verifica(Quinze *vazio, int dimensao, int movimento);
 
 /* Função procura vazio 
 
 */
-Quinze *posicao_vazio(Quinze **matriz, int dimensao);
+void posicao_vazio(Quinze **matriz, int dimensao, int *linha, int *coluna);
+
+/* Função para comapra a posisão
+
+*/
+int compara(char *base, char *comparacao);
 
 /* Função movimento 
 
 */
-void movimento(Quinze **matriz, int dimensao, int movimento);
+void movimento(Quinze **matriz, Quinze *vazio, int dimensao, int movimento);
 
 /* Função verifica resultado  
 

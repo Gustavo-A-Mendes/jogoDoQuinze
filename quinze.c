@@ -62,10 +62,15 @@ void randomiza(Quinze **matriz, int dimensao)
     {
         for (j = 0; j < dimensao; j++)
         {   
-            sprintf(matriz[i][j].valor, "%d", valores[i*dimensao + j]);
+            if(j != dimensao - 1 || i < dimensao - 1){
+                sprintf(matriz[i][j].valor, "%d", valores[i*dimensao + j]);
+            }else{
+                sprintf(matriz[i][j].valor, "%s", " ");
+            }
         }        
     }
-
+    // char espaco[3] = {' '};
+    // matriz[i][j].valor =  espaco;
     // for (i = 0; i < dimensao*dimensao; i++)
     // {
     //     printf("%d\n", valores[i]);
@@ -73,18 +78,159 @@ void randomiza(Quinze **matriz, int dimensao)
     
 }
 
-int main(void) {
-    int n = 4;
-    Quinze **jogo = cria_jogo(n);
-    randomiza(jogo, n);
+int compara(char *base, char *comparacao){
+    return strcmp(base, comparacao);
+}
+
+void posicao_vazio(Quinze **matriz, int dimensao, int *linha, int *coluna){
     int i, j;
-    for (i = 0; i < n; i++)
-    {
-        for (j = 0; j < n; j++)
-        {
-            printf("%s\t", jogo[i][j].valor);
+    for(i = 0; i < dimensao; i++){
+        for(j = 0; j < dimensao; j++){
+            if(!(compara(matriz[i][j].valor, " "))){
+                *linha = matriz[i][j].lin;
+                *coluna = matriz[i][j].col;
+            }
         }
-        printf("\n\n");
+    }
+}
+
+
+int verifica(Quinze *vazio, int dimensao, int movimento){
+    switch (movimento)
+    {
+    case 1: // para cima
+        if(vazio->lin == dimensao && vazio->col == dimensao - 1){
+        printf("..g.");
+        return 0;}
+        break;
+    
+    case 2: // para a esquerda
+        if(vazio->lin == dimensao - 1 && vazio->col == dimensao - 1){
+        printf("...");
+        return 0;}
+        break;
+
+    case 3: // para a direita
+        if(vazio->col == 0 && vazio->lin == 0){
+        printf("...");
+        return 0;}
+        break;
+    
+    case 4: // para baixo
+        if(vazio->lin == 0){
+        printf("..");
+        return 0;}
+        break;
+    }
+}
+
+void movimento(Quinze **matriz, Quinze *vazio, int dimensao, int movimento){
+    Quinze *auxiliar = (Quinze*) calloc(1,sizeof(Quinze));
+    if(verifica(vazio, dimensao, movimento)){
+        switch (movimento)
+        {
+        case 1:
+            strcpy(auxiliar->valor, vazio->valor);
+            auxiliar->col = vazio->col;
+            auxiliar->lin = vazio->lin;
+  
+            strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin + 1)][vazio->col].valor);
+            matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin + 1)][auxiliar->col].lin;
+            matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin + 1)][auxiliar->col].col;
+            
+            strcpy(matriz[(vazio->lin + 1)][vazio->col].valor, " ");
+            matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
+            matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
+            break;
+        
+        case 4:
+            strcpy(auxiliar->valor, vazio->valor);
+            auxiliar->col = vazio->col;
+            auxiliar->lin = vazio->lin;
+  
+            strcpy(matriz[(vazio->lin)][vazio->col].valor, matriz[(vazio->lin - 1)][vazio->col].valor);
+            matriz[(vazio->lin)][vazio->col].lin = matriz[(auxiliar->lin - 1)][auxiliar->col].lin;
+            matriz[(vazio->lin)][vazio->col].col = matriz[(auxiliar->lin - 1)][auxiliar->col].col;
+            
+            strcpy(matriz[(vazio->lin - 1)][vazio->col].valor, " ");
+            matriz[(auxiliar->lin)][auxiliar->col].col = auxiliar->col;
+            matriz[(auxiliar->lin)][auxiliar->col].lin = auxiliar->lin;
+            break;
+        
+        }
+    }else{
+        printf("Jogada invalida\n");
+    }
+    free(auxiliar);
+}
+
+int main(void) {
+    int dimensao = 4;
+    Quinze *vazio = (Quinze*) malloc(sizeof(Quinze));
+    Quinze **jogo = cria_jogo(dimensao);
+    randomiza(jogo, dimensao);
+    int i, j;
+    for (i = 0; i < dimensao; i++)
+    {
+        printf("|");
+        for (j = 0; j < dimensao; j++)
+        {
+            if(j < dimensao - 1){
+                printf("%s\t", jogo[i][j].valor);
+            }else if(strlen(jogo[i][j].valor) == 1){
+                printf("%s |", jogo[i][j].valor);
+            }else{
+                printf("%s|", jogo[i][j].valor);
+            }
+        }
+        printf("\n");
+    }
+
+    posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
+    printf("linha: %d coluna: %d\n", vazio->lin, vazio->col);
+
+    int mov;
+    printf("Numero: ");
+    scanf("%d", &mov);
+
+    movimento(jogo, vazio, dimensao, mov);
+
+    for (i = 0; i < dimensao; i++)
+    {
+        printf("|");
+        for (j = 0; j < dimensao; j++)
+        {
+            if(j < dimensao - 1){
+                printf("%s\t", jogo[i][j].valor);
+            }else if(strlen(jogo[i][j].valor) == 1){
+                printf("%s |", jogo[i][j].valor);
+            }else{
+                printf("%s|", jogo[i][j].valor);
+            }
+        }
+        printf("\n");
+    }
+    while(mov != 6){
+    printf("Numero: ");
+    scanf("%d", &mov);
+    posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
+    movimento(jogo, vazio, dimensao, mov);
+
+    for (i = 0; i < dimensao; i++)
+    {
+        printf("|");
+        for (j = 0; j < dimensao; j++)
+        {
+            if(j < dimensao - 1){
+                printf("%s\t", jogo[i][j].valor);
+            }else if(strlen(jogo[i][j].valor) == 1){
+                printf("%s |", jogo[i][j].valor);
+            }else{
+                printf("%s|", jogo[i][j].valor);
+            }
+        }
+        printf("\n");
+    }
     }
     return 0;
 }
