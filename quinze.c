@@ -1,4 +1,3 @@
-#define _OPEN_SYS_ITOA_EXT
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
