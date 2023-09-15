@@ -46,3 +46,9 @@ int gabarito(Quinze **matriz, Quinze **resposta, int dimensao);
 
 void gera_resposta(Quinze **matriz, Quinze **resposta, int dimensao);
 
+char lerCaractere();
+
+void ativarModoRaw();
+
+void desativarModoRaw();
+
