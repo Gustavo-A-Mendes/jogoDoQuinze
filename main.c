@@ -7,7 +7,7 @@
 int main(void)
 {
     int reset = 1;
-    int dim;
+    int dim = 0;
     char movi, resp;
     Quinze *vazi;/* = (Quinze*)malloc(sizeof(Quinze))*/;
     Quinze **jogo;
@@ -18,6 +18,11 @@ int main(void)
     {
 
         if (reset == 1) {
+            // int i;
+            // for (i = 0; i < dim; i++) {
+            //     libera_jogo(jogo, i);
+            //     libera_jogo(resposta, i);
+            // }
             system("cls");
 
             printf("Insira a dimensao: ");
@@ -27,67 +32,18 @@ int main(void)
 
             system("cls");
 
-            // printf("oi\n");
             randomiza(jogo, dim);
-
-            printf("Aperte 'r' para reiniciar, ou 'x' para fechar\n\n");
-
-            int i, j;
-            for (i = 0; i < dim; i++)
-            {
-                printf("|");
-                for (j = 0; j < dim; j++)
-                {   
-                    strcpy(valor_cell, retorna_valor(jogo, i, j));
-                    if (j < dim - 1)
-                    {
-                        printf("%s\t", valor_cell);
-                    }
-                    else if (strlen(valor_cell) == 1)
-                    {
-                        printf("%s |", valor_cell);
-                    }
-                    else
-                    {
-                        printf("%s|", valor_cell);
-                    }
-                }
-                printf("\n");
-            }
 
             reset = 0;
         }
 
-        // if (gabarito(jogo, resposta, dim) == 1) {
-        //     printf("\nParabens! Vc eh top.\n");
-        //     break;
-        // }
-
-        printf("Movimento: ");
-        // scanf(" %1[^\n]", mov);
-        // ativarModoRaw();
-        movi = getchar();
-        
-        // printf("digitado: %c", movi);
-        
-        if (movi == 'x') break;
-        else if (movi == 'r') reset = 1;
-        
-
-        system("cls");
-        vazi = posicao_vazio(jogo, dim);
-        
-        if (verifica(vazi, dim, movi)){
-            movimento(jogo, vazi, dim, movi);
-        }
-        
         printf("Aperte 'r' para reiniciar, ou 'x' para fechar\n\n");
         int i, j;
         for (i = 0; i < dim; i++)
         {
             printf("|");
             for (j = 0; j < dim; j++)
-            {
+            {   
                 strcpy(valor_cell, retorna_valor(jogo, i, j));
                 if (j < dim - 1)
                 {
@@ -104,19 +60,39 @@ int main(void)
             }
             printf("\n");
         }
+        // if (gabarito(jogo, resposta, dim) == 1) {
+        //     printf("\nParabens! Vc eh top.\n");
+        //     break;
+        // }
 
+        printf("Movimento: ");
+        movi = getchar();
+        
+        if (movi == 'x') break;
+        else if (movi == 'r') reset = 1;
+        
+        system("cls");
+        vazi = posicao_vazio(jogo, dim);
+        
+        if (verifica(vazi, dim, movi) && reset == 0 ) {
+            movimento(jogo, vazi, dim, movi);
+        }
+        
+        free(vazi);
+        
+        
         if (gabarito(jogo, resposta, dim) == 1) {
             printf("\nParabens! Vc eh top.\n");
-            free(vazi);
             
-            printf("\nJogar de novo? [S/N]\n");
-            while(getchar() != '\n');
+            // printf("\nJogar de novo? [S/N]\n");
+            // // while(getchar() != '\n');
 
-            resp = getchar();
-            if(toupper(resp) == 'N') break;
-            reset = 1;
+            // resp = getchar();
+            // if(toupper(resp) == 'N') break;
+            // reset = 1;
         }
         // desativarModoRaw();
+        
     }
     int i;
     for (i = 0; i < dim; i++) {

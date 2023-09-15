@@ -54,22 +54,27 @@ void randomiza(Quinze **matriz, int dimensao)
 
     int desfaz_jogada = 4;
     int teclas[4] = {'w', 'a', 'd', 's'};
-    Quinze *vaz;
+    Quinze *vazio;
     int i = 0;
-    while (i < 200) {
+    
+    while (i < 20) {
         int mov_rand = (rand() % 4);
         
         if (mov_rand != desfaz_jogada) {
-            vaz = posicao_vazio(matriz, dimensao);
-            if(vaz != NULL) {
-                if (verifica(vaz, dimensao, teclas[mov_rand])) {
-                    // printf("%d\n", mov_rand);
-                    movimento(matriz, vaz, dimensao, teclas[mov_rand]);
+            // printf("oi\n");
+            
+            printf("repeticao: %d\n", i);
+            printf("movimento: %d\n", mov_rand);
+            printf("movimento oposta: %d\n\n", desfaz_jogada);
+            vazio = posicao_vazio(matriz, dimensao);
+            if(vazio != NULL) {
+                if (verifica(vazio, dimensao, teclas[mov_rand])) {
+                    movimento(matriz, vazio, dimensao, teclas[mov_rand]);
                     desfaz_jogada = 3 - mov_rand;
                     i++;
                 }
             }
-            free(vaz);
+            free(vazio);
         }
     }
 }
