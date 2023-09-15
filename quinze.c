@@ -3,8 +3,9 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <termios.h>
-#include <unistd.h>
+#include <conio.h>
+// #include <termios.h>
+// #include <unistd.h>
 #include "quinze.h"
 
 struct quinze
@@ -211,20 +212,20 @@ int gabarito(Quinze **matriz, Quinze **resposta, int dimensao)
 }
 
 // Função para ativar o modo "raw" do terminal
-void ativarModoRaw(void) {
-    struct termios raw;
-    tcgetattr(STDIN_FILENO, &raw);
-    raw.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-}
+// void ativarModoRaw(void) {
+//     struct termios raw;
+//     tcgetattr(STDIN_FILENO, &raw);
+//     raw.c_lflag &= ~(ICANON | ECHO);
+//     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+// }
 
-// Função para desativar o modo "raw" do terminal
-void desativarModoRaw(void) {
-    struct termios cooked;
-    tcgetattr(STDIN_FILENO, &cooked);
-    cooked.c_lflag |= (ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
-}
+// // Função para desativar o modo "raw" do terminal
+// void desativarModoRaw(void) {
+//     struct termios cooked;
+//     tcgetattr(STDIN_FILENO, &cooked);
+//     cooked.c_lflag |= (ICANON | ECHO);
+//     tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
+// }
 
 int main(void)
 {
@@ -235,7 +236,7 @@ int main(void)
     Quinze **resposta = cria_jogo(dimensao);
     randomiza(jogo, dimensao);
 
-    system("clear");
+    system("cls");
 
     int i, j;
     for (i = 0; i < dimensao; i++)
@@ -320,14 +321,14 @@ int main(void)
 
         printf("Movimento: ");
         // scanf(" %1[^\n]", mov);
-        ativarModoRaw();
+        // ativarModoRaw();
         movi = getchar();
         printf("digitado: %c", movi);
         
         while(getchar() != '\n');
         
         
-        system("clear");
+        system("cls");
         
         posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
         
@@ -360,7 +361,7 @@ int main(void)
             printf("\nParabens! Vc eh top.\n");
             break;
         }
-        desativarModoRaw();
+        // desativarModoRaw();
 
     } while (mov[0] != 'x');
     return 0;
