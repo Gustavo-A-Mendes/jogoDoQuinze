@@ -242,28 +242,7 @@ int main(void)
 
 
     posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
-    printf("linha: %d coluna: %d\n", vazio->lin, vazio->col);
-    
-    for (i = 0; i < dimensao; i++)
-    {
-        printf("|");
-        for (j = 0; j < dimensao; j++)
-        {
-            if (j < dimensao - 1)
-            {
-                printf("%s\t", resposta[i][j].valor);
-            }
-            else if (strlen(resposta[i][j].valor) == 1)
-            {
-                printf("%s |", resposta[i][j].valor);
-            }
-            else
-            {
-                printf("%s|", resposta[i][j].valor);
-            }
-        }
-        printf("\n");
-    }
+    // printf("linha: %d coluna: %d\n", vazio->lin, vazio->col);
 
     char mov[2];
     // printf("Numero: ");
@@ -294,6 +273,10 @@ int main(void)
     // }
     do
     {
+        if (gabarito(jogo, resposta, dimensao) == 1) {
+            printf("\nParabens! Vc eh top.\n");
+            break;
+        }
 
         printf("Numero: ");
         scanf(" %1[^\n]", mov);
@@ -328,10 +311,6 @@ int main(void)
             printf("\n");
         }
 
-        if (gabarito(jogo, resposta, dimensao) == 1) {
-            printf("\nParabens! Vc eh top.\n");
-            break;
-        }
 
     } while (mov[0] != 'x');
     return 0;
