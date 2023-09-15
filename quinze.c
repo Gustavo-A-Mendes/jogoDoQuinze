@@ -18,48 +18,58 @@ struct quinze
 Quinze **cria_jogo(int dimensao)
 {
     int i, j;
-    Quinze **jogo = (Quinze **)malloc(dimensao * sizeof(Quinze *));
-    if (jogo == NULL)
+    Quinze **matriz = (Quinze **)malloc(dimensao * sizeof(Quinze *));
+    if (matriz == NULL)
         exit(1);
     for (i = 0; i < dimensao; i++)
     {
-        jogo[i] = (Quinze *)malloc(dimensao * sizeof(Quinze));
-        if (jogo[i] == NULL)
+        matriz[i] = (Quinze *)malloc(dimensao * sizeof(Quinze));
+        if (matriz[i] == NULL)
             exit(1);
 
         for (j = 0; j < dimensao; j++)
         {
-            jogo[i][j].lin = i;
-            jogo[i][j].col = j;
+            matriz[i][j].lin = i;
+            matriz[i][j].col = j;
             if ((i == (dimensao-1) && j == (dimensao-1)))
-                sprintf(jogo[i][j].valor, "%s", " ");
+                sprintf(matriz[i][j].valor, "%s", " ");
             else
-                sprintf(jogo[i][j].valor, "%d", ((i * dimensao + j) + 1));
+                sprintf(matriz[i][j].valor, "%d", ((i * dimensao + j) + 1));
 
         }
     }
 
-    return jogo;
+    return matriz;
+}
+
+Quinze *libera_jogo(Quinze** matriz, int count)
+{
+    free(matriz[count]);
+    
 }
 
 void randomiza(Quinze **matriz, int dimensao)
 {
     srand(time(0));
 
-    int jogada_anterior = 0;
+    int desfaz_jogada = 4;
     int teclas[4] = {'w', 'a', 'd', 's'};
-    Quinze *vaz = (Quinze *)malloc(sizeof(Quinze));
-    int ale;
-    for (ale = 0; ale < 200;) {
+    Quinze *vaz;
+    int i = 0;
+    while (i < 200) {
         int mov_rand = (rand() % 4);
         
-        if (mov_rand != jogada_anterior) {
-            posicao_vazio(matriz, dimensao, &vaz->lin, &vaz->col);
-            if (verifica(vaz, dimensao, teclas[mov_rand])) {
-                movimento(matriz, vaz, dimensao, teclas[mov_rand]);
-                jogada_anterior = mov_rand;
-                ale++;
+        if (mov_rand != desfaz_jogada) {
+            vaz = posicao_vazio(matriz, dimensao);
+            if(vaz != NULL) {
+                if (verifica(vaz, dimensao, teclas[mov_rand])) {
+                    // printf("%d\n", mov_rand);
+                    movimento(matriz, vaz, dimensao, teclas[mov_rand]);
+                    desfaz_jogada = 3 - mov_rand;
+                    i++;
+                }
             }
+            free(vaz);
         }
     }
 }
@@ -69,8 +79,9 @@ int compara(char *base, char *comparacao)
     return strcmp(base, comparacao);
 }
 
-void posicao_vazio(Quinze **matriz, int dimensao, int *linha, int *coluna)
+Quinze *posicao_vazio(Quinze **matriz, int dimensao/*, int *linha, int *coluna*/)
 {
+    Quinze *vazio = (Quinze*)malloc(sizeof(Quinze));
     int i, j;
     for (i = 0; i < dimensao; i++)
     {
@@ -78,11 +89,13 @@ void posicao_vazio(Quinze **matriz, int dimensao, int *linha, int *coluna)
         {
             if (!(compara(matriz[i][j].valor, " ")))
             {
-                *linha = matriz[i][j].lin;
-                *coluna = matriz[i][j].col;
+                vazio->lin = i;
+                vazio->col = j;
+                return vazio;
             }
         }
     }
+    return NULL;
 }
 
 int verifica(Quinze *vazio, int dimensao, char movimento)
@@ -211,6 +224,11 @@ int gabarito(Quinze **matriz, Quinze **resposta, int dimensao)
     return 1;
 }
 
+char *retorna_valor (Quinze **matriz, int linha, int coluna)
+{
+    return matriz[linha][coluna].valor;
+}
+
 // Função para ativar o modo "raw" do terminal
 // void ativarModoRaw(void) {
 //     struct termios raw;
@@ -226,144 +244,4 @@ int gabarito(Quinze **matriz, Quinze **resposta, int dimensao)
 //     cooked.c_lflag |= (ICANON | ECHO);
 //     tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
 // }
-
-int main(void)
-{
-    int dimensao = 4;
-    char movi;
-    Quinze *vazio = (Quinze *)malloc(sizeof(Quinze));
-    Quinze **jogo = cria_jogo(dimensao);
-    Quinze **resposta = cria_jogo(dimensao);
-    randomiza(jogo, dimensao);
-
-    system("cls");
-
-    int i, j;
-    for (i = 0; i < dimensao; i++)
-    {
-        printf("|");
-        for (j = 0; j < dimensao; j++)
-        {
-            if (j < dimensao - 1)
-            {
-                printf("%s\t", jogo[i][j].valor);
-            }
-            else if (strlen(jogo[i][j].valor) == 1)
-            {
-                printf("%s |", jogo[i][j].valor);
-            }
-            else
-            {
-                printf("%s|", jogo[i][j].valor);
-            }
-        }
-        printf("\n");
-    }
-
-
-    // posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
-    // nha: %d coluna: %d\n", vazio->lin, vazio->col);
-    
-    // for (i = 0; i < dimensao; i++)
-    // {
-    //     printf("|");
-    //     for (j = 0; j < dimensao; j++)
-    //     {
-    //         if (j < dimensao - 1)
-    //         {
-    //             printf("%s\t", resposta[i][j].valor);
-    //         }
-    //         else if (strlen(resposta[i][j].valor) == 1)
-    //         {
-    //             printf("%s |", resposta[i][j].valor);
-    //         }
-    //         else
-    //         {
-    //             printf("%s|", resposta[i][j].valor);
-    //         }
-    //     }
-    //     printf("\n");
-    // }
-
-    char mov[2];
-    // printf("Numero: ");
-    // scanf(" %1[^\n]", mov);
-    // while(getchar() != '\n');
-
-    // movimento(jogo, vazio, dimensao, mov[0]);
-
-    // for (i = 0; i < dimensao; i++)
-    // {
-    //     printf("|");
-    //     for (j = 0; j < dimensao; j++)
-    //     {
-    //         if (j < dimensao - 1)
-    //         {
-    //             printf("%s\t", jogo[i][j].valor);
-    //         }
-    //         else if (strlen(jogo[i][j].valor) == 1)
-    //         {
-    //             printf("%s |", jogo[i][j].valor);
-    //         }
-    //         else
-    //         {
-    //             printf("%s|", jogo[i][j].valor);
-    //         }
-    //     }
-    //     printf("\n");
-    // }
-    do
-    {
-        if (gabarito(jogo, resposta, dimensao) == 1) {
-            printf("\nParabens! Vc eh top.\n");
-            break;
-        }
-
-        printf("Movimento: ");
-        // scanf(" %1[^\n]", mov);
-        // ativarModoRaw();
-        movi = getchar();
-        printf("digitado: %c", movi);
-        
-        while(getchar() != '\n');
-        
-        
-        system("cls");
-        
-        posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
-        
-        if (verifica(vazio, dimensao, movi)){
-            movimento(jogo, vazio, dimensao, movi);
-        }
-        
-        for (i = 0; i < dimensao; i++)
-        {
-            printf("|");
-            for (j = 0; j < dimensao; j++)
-            {
-                if (j < dimensao - 1)
-                {
-                    printf("%s\t", jogo[i][j].valor);
-                }
-                else if (strlen(jogo[i][j].valor) == 1)
-                {
-                    printf("%s |", jogo[i][j].valor);
-                }
-                else
-                {
-                    printf("%s|", jogo[i][j].valor);
-                }
-            }
-            printf("\n");
-        }
-
-        if (gabarito(jogo, resposta, dimensao) == 1) {
-            printf("\nParabens! Vc eh top.\n");
-            break;
-        }
-        // desativarModoRaw();
-
-    } while (mov[0] != 'x');
-    return 0;
-}
 
