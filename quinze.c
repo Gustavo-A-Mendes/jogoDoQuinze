@@ -3,6 +3,8 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <termios.h>
+#include <unistd.h>
 #include "quinze.h"
 
 struct quinze
@@ -208,15 +210,32 @@ int gabarito(Quinze **matriz, Quinze **resposta, int dimensao)
     return 1;
 }
 
+// Função para ativar o modo "raw" do terminal
+void ativarModoRaw(void) {
+    struct termios raw;
+    tcgetattr(STDIN_FILENO, &raw);
+    raw.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
+
+// Função para desativar o modo "raw" do terminal
+void desativarModoRaw(void) {
+    struct termios cooked;
+    tcgetattr(STDIN_FILENO, &cooked);
+    cooked.c_lflag |= (ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
+}
+
 int main(void)
 {
-    int dimensao = 3;
+    int dimensao = 4;
+    char movi;
     Quinze *vazio = (Quinze *)malloc(sizeof(Quinze));
     Quinze **jogo = cria_jogo(dimensao);
     Quinze **resposta = cria_jogo(dimensao);
     randomiza(jogo, dimensao);
 
-    system("cls");
+    system("clear");
 
     int i, j;
     for (i = 0; i < dimensao; i++)
@@ -241,29 +260,29 @@ int main(void)
     }
 
 
-    posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
-    printf("linha: %d coluna: %d\n", vazio->lin, vazio->col);
+    // posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
+    // nha: %d coluna: %d\n", vazio->lin, vazio->col);
     
-    for (i = 0; i < dimensao; i++)
-    {
-        printf("|");
-        for (j = 0; j < dimensao; j++)
-        {
-            if (j < dimensao - 1)
-            {
-                printf("%s\t", resposta[i][j].valor);
-            }
-            else if (strlen(resposta[i][j].valor) == 1)
-            {
-                printf("%s |", resposta[i][j].valor);
-            }
-            else
-            {
-                printf("%s|", resposta[i][j].valor);
-            }
-        }
-        printf("\n");
-    }
+    // for (i = 0; i < dimensao; i++)
+    // {
+    //     printf("|");
+    //     for (j = 0; j < dimensao; j++)
+    //     {
+    //         if (j < dimensao - 1)
+    //         {
+    //             printf("%s\t", resposta[i][j].valor);
+    //         }
+    //         else if (strlen(resposta[i][j].valor) == 1)
+    //         {
+    //             printf("%s |", resposta[i][j].valor);
+    //         }
+    //         else
+    //         {
+    //             printf("%s|", resposta[i][j].valor);
+    //         }
+    //     }
+    //     printf("\n");
+    // }
 
     char mov[2];
     // printf("Numero: ");
@@ -295,17 +314,22 @@ int main(void)
     do
     {
 
-        printf("Numero: ");
-        scanf(" %1[^\n]", mov);
+        printf("Movimento: ");
+        // scanf(" %1[^\n]", mov);
+        ativarModoRaw();
+        movi = getchar();
+        printf("digitado: %c", movi);
+        
         while(getchar() != '\n');
         
         
-        system("cls");
+        system("clear");
         
         posicao_vazio(jogo, dimensao, &vazio->lin, &vazio->col);
         
-        if (verifica(vazio, dimensao, mov[0]))
-            movimento(jogo, vazio, dimensao, mov[0]);
+        if (verifica(vazio, dimensao, movi)){
+            movimento(jogo, vazio, dimensao, movi);
+        }
         
         for (i = 0; i < dimensao; i++)
         {
@@ -332,6 +356,7 @@ int main(void)
             printf("\nParabens! Vc eh top.\n");
             break;
         }
+        desativarModoRaw();
 
     } while (mov[0] != 'x');
     return 0;
