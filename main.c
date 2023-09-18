@@ -106,7 +106,7 @@ int main(void)
             // resp = getchar();
             // if(toupper(resp) == 'N') break;
             // reset = 1;
-        } else printf("nao\n");
+        }
         // desativarModoRaw();
         
     }

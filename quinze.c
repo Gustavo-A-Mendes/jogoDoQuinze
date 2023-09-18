@@ -250,20 +250,13 @@ void movimento(Quinze *matriz, Quinze *vazio, char movimento)
 int gabarito(Quinze *matriz, Quinze *resposta, int dimensao)
 {
     int i, j;
-    Quinze *p1 = matriz, *p1_resp = resposta, *p2, *p2_resp;
-    for (i = 0; i < dimensao; i++) {
-        p2 = p1;
-        p2_resp = p1_resp;
-        for (j = 0; j < dimensao; j++) {
-            if (compara(p2->valor, p2_resp->valor) != 0)
+    Quinze *p1 = matriz, *p1_R = resposta, *p2, *p2_R;
+    
+    for ((p1 = matriz, p1_R = resposta); (p1 != NULL && p1_R != NULL); (p1 = p1->baixo, p1_R = p1_R->baixo)) {
+        for ((p2 = p1, p2_R = p1_R); (p2 != NULL && p2_R != NULL); (p2 = p2->direita, p2_R = p2_R->direita)) {
+            if (compara(p2->valor, p2_R->valor) != 0)
                 return 0;
-            
-            p2 = p2->direita;
-            p2_resp = p2_resp->direita;
         }
-
-        p1 = p1->baixo;
-        p1_resp = p1_resp->baixo;
     }
     return 1;
 }
