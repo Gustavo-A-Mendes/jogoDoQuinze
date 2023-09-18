@@ -3,9 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <conio.h>
-// #include <termios.h>
-// #include <unistd.h>
 #include "quinze.h"
 
 struct quinze
@@ -16,11 +13,10 @@ struct quinze
     Quinze *cima;
     Quinze *esquerda;
     Quinze *direita;
-    Quinze *baixo;
+    Quinze *abaixo;
 };
 
-
-Quinze *cria_jogo(int dimensao)
+Quinze *cria_jogo(int dimensao/*, char *valor*/)
 {
     int i, j;
     
@@ -34,6 +30,7 @@ Quinze *cria_jogo(int dimensao)
                 exit(1);
             celula->lin = i;
             celula->col = j;
+            // strcpy(celula->valor, valor);
 
             if (i == 0) {
 
@@ -41,14 +38,14 @@ Quinze *cria_jogo(int dimensao)
                     celula->cima = NULL;
                     celula->esquerda = NULL;
                     celula->direita = NULL;
-                    celula->baixo = NULL;
+                    celula->abaixo = NULL;
 
                     p1 = celula;
                 } else {
                     celula->cima = NULL;
                     celula->esquerda = NULL;
                     celula->direita = p2;
-                    celula->baixo = NULL;
+                    celula->abaixo = NULL;
 
                     p2->esquerda = celula;
                 }
@@ -57,7 +54,7 @@ Quinze *cria_jogo(int dimensao)
                     celula->cima = NULL;
                     celula->esquerda = NULL;
                     celula->direita = NULL;
-                    celula->baixo = p2;
+                    celula->abaixo = p2;
 
                     p2->cima = celula;
                     p1 = celula;
@@ -65,10 +62,10 @@ Quinze *cria_jogo(int dimensao)
                     celula->cima = NULL;
                     celula->esquerda = NULL;
                     celula->direita = p2;
-                    celula->baixo = p2->baixo->esquerda;
+                    celula->abaixo = p2->abaixo->esquerda;
 
                     p2->esquerda = celula;
-                    p2->baixo->esquerda->cima = celula;
+                    p2->abaixo->esquerda->cima = celula;
                 }
             }
 
@@ -83,27 +80,38 @@ void enumera_celulas(Quinze *matriz)
 {   
     int count = 1;
     Quinze *p1/* = matriz*/, *p2;
-    for (p1 = matriz; p1 != NULL; p1 = p1->baixo) {
+    for (p1 = matriz; p1 != NULL; p1 = p1->abaixo) {
         // p2 = p1;
         for (p2 = p1; p2 != NULL; p2 = p2->direita) {
             
-            if ((p2->baixo == NULL) && (p2->direita == NULL))
-                sprintf(p2->valor, "%s", " ");
+            if ((p2->abaixo == NULL) && (p2->direita == NULL))
+                sprintf(p2->valor, "%2s", "  ");
+
             else
-                sprintf(p2->valor, "%d", count);
+                sprintf(p2->valor, "%2d", count);
             
             count++;
             // p2 = p2->direita;
         }
-        // p1 = p1->baixo;
+        // p1 = p1->abaixo;
     }
     
 }
 
-Quinze *libera_jogo(Quinze* matriz, int count)
+void libera_jogo(Quinze* matriz)
 {
-    // free(matriz[count]);
-    
+    Quinze *p1, *p2;
+	Quinze *t;
+    for (p1=matriz; p1 != NULL; p1 = p1->abaixo)
+    {
+        for (p2 = p1; p2 != NULL; p2 = p2->direita)
+        {
+            t = p2->direita;
+            free(p2);		// libera memória de "p2"
+            p2 = t;			// adiciona o endereço do próximo valor no ponteiro "p2"
+        }
+        
+    }
 }
 
 void randomiza(Quinze *matriz)
@@ -111,7 +119,7 @@ void randomiza(Quinze *matriz)
     srand(time(0));
 
     int desfaz_jogada = 4;
-    int teclas[4] = {'w', 'a', 'd', 's'};
+    int teclas[4] = {'W', 'A', 'D', 'S'};
     Quinze *vazio;
     int i = 0;
     
@@ -119,13 +127,13 @@ void randomiza(Quinze *matriz)
         int mov_rand = (rand() % 4);
         
         if (mov_rand != desfaz_jogada) {
-            // printf("oi\n");
             
             // printf("repeticao: %d\n", i);
             // printf("movimento: %d\n", mov_rand);
             // printf("movimento oposta: %d\n\n", desfaz_jogada);
             vazio = posicao_vazio(matriz);
             if(vazio != NULL) {
+                // printf("oi\n");
                 if (verifica(vazio, teclas[mov_rand])) {
                     movimento(matriz, vazio, teclas[mov_rand]);
                     desfaz_jogada = 3 - mov_rand;
@@ -144,9 +152,9 @@ int compara(char *base, char *comparacao)
 Quinze *posicao_vazio(Quinze *matriz)
 {
     Quinze *p1, *p2;
-    for (p1 = matriz; p1 != NULL; p1 = p1->baixo) {
+    for (p1 = matriz; p1 != NULL; p1 = p1->abaixo) {
         for (p2 = p1; p2 != NULL; p2 = p2->direita) {
-            if (!(compara(p2->valor, " ")))
+            if (!(compara(p2->valor, "  ")))
                 return p2;
         }
     }
@@ -157,15 +165,15 @@ int verifica(Quinze *vazio, char movimento)
 {
     switch (movimento)
     {
-        case 'w': // para cima
+        case 'W': // para cima
             // printf("..g.");
-            if (vazio->baixo == NULL)
+            if (vazio->abaixo == NULL)
             {
                 return 0;
             }
             break;
 
-        case 'a': // para a esquerda
+        case 'A': // para a esquerda
             // printf(".h.");
             if (vazio->direita == NULL)
             {
@@ -173,7 +181,7 @@ int verifica(Quinze *vazio, char movimento)
             }
             break;
 
-        case 'd': // para a direita
+        case 'D': // para a direita
             // printf("...");
             if (vazio->esquerda == NULL)
             {
@@ -181,7 +189,7 @@ int verifica(Quinze *vazio, char movimento)
             }
             break;
 
-        case 's': // para baixo
+        case 'S': // para abaixo
             // printf("..");
             if (vazio->cima == NULL)
             {
@@ -202,41 +210,41 @@ void movimento(Quinze *matriz, Quinze *vazio, char movimento)
     // {
     switch (movimento)
     {
-        case 'w': // para cima
+        case 'W': // para cima
             // copia os dados da peça movida, para por no lugar dela:
             strcpy(auxiliar->valor, vazio->valor);
 
-            // move o valor da peça de baixo para a posição do vazio:
-            strcpy(vazio->valor, vazio->baixo->valor);
+            // move o valor da peça de abaixo para a posição do vazio:
+            strcpy(vazio->valor, vazio->abaixo->valor);
             // adiciona o valor vazio na posição original da peça:
-            strcpy(vazio->baixo->valor, auxiliar->valor);
+            strcpy(vazio->abaixo->valor, auxiliar->valor);
             break;
 
-        case 'a': // para esquerda
+        case 'A': // para esquerda
             // copia os dados da peça movida, para por no lugar dela:
             strcpy(auxiliar->valor, vazio->valor);
 
-            // move o valor da peça de baixo para a posição do vazio:
+            // move o valor da peça de abaixo para a posição do vazio:
             strcpy(vazio->valor, vazio->direita->valor);
             // adiciona o valor vazio na posição original da peça:
             strcpy(vazio->direita->valor, auxiliar->valor);
             break;
 
-        case 'd': // para direita
+        case 'D': // para direita
             // copia os dados da peça movida, para por no lugar dela:
             strcpy(auxiliar->valor, vazio->valor);
 
-            // move o valor da peça de baixo para a posição do vazio:
+            // move o valor da peça de abaixo para a posição do vazio:
             strcpy(vazio->valor, vazio->esquerda->valor);
             // adiciona o valor vazio na posição original da peça:
             strcpy(vazio->esquerda->valor, auxiliar->valor);
             break;
 
-        case 's': // para baixo
+        case 'S': // para abaixo
             // copia os dados da peça movida, para por no lugar dela:
             strcpy(auxiliar->valor, vazio->valor);
 
-            // move o valor da peça de baixo para a posição do vazio:
+            // move o valor da peça de abaixo para a posição do vazio:
             strcpy(vazio->valor, vazio->cima->valor);
             // adiciona o valor vazio na posição original da peça:
             strcpy(vazio->cima->valor, auxiliar->valor);
@@ -252,7 +260,7 @@ int gabarito(Quinze *matriz, Quinze *resposta, int dimensao)
     int i, j;
     Quinze *p1 = matriz, *p1_R = resposta, *p2, *p2_R;
     
-    for ((p1 = matriz, p1_R = resposta); (p1 != NULL && p1_R != NULL); (p1 = p1->baixo, p1_R = p1_R->baixo)) {
+    for ((p1 = matriz, p1_R = resposta); (p1 != NULL && p1_R != NULL); (p1 = p1->abaixo, p1_R = p1_R->abaixo)) {
         for ((p2 = p1, p2_R = p1_R); (p2 != NULL && p2_R != NULL); (p2 = p2->direita, p2_R = p2_R->direita)) {
             if (compara(p2->valor, p2_R->valor) != 0)
                 return 0;
@@ -264,7 +272,7 @@ int gabarito(Quinze *matriz, Quinze *resposta, int dimensao)
 char *retorna_valor (Quinze *matriz, int linha, int coluna)
 {   
     Quinze *p1, *p2;
-    for (p1 = matriz; p1 != NULL; p1 = p1->baixo) {
+    for (p1 = matriz; p1 != NULL; p1 = p1->abaixo) {
         for (p2 = p1; p2 != NULL; p2 = p2->direita) {
             if (p2->lin == linha && p2->col == coluna)
                 return p2->valor;
@@ -272,19 +280,3 @@ char *retorna_valor (Quinze *matriz, int linha, int coluna)
     }
     return NULL;
 }
-
-// Função para ativar o modo "raw" do terminal
-// void ativarModoRaw(void) {
-//     struct termios raw;
-//     tcgetattr(STDIN_FILENO, &raw);
-//     raw.c_lflag &= ~(ICANON | ECHO);
-//     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-// }
-
-// // Função para desativar o modo "raw" do terminal
-// void desativarModoRaw(void) {
-//     struct termios cooked;
-//     tcgetattr(STDIN_FILENO, &cooked);
-//     cooked.c_lflag |= (ICANON | ECHO);
-//     tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
-// }

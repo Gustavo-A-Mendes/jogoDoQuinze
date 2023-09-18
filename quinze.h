@@ -9,7 +9,7 @@ typedef struct quinze Quinze;
 /* Função cria_jogo
 
 */
-Quinze *cria_jogo(int dimensao);
+Quinze *cria_jogo(int dimensao/*, char *valor*/);
 
 /* Função enumera_celulas
 
@@ -19,7 +19,7 @@ void enumera_celulas(Quinze *matriz);
 /* Função
 
 */
-Quinze *libera_jogo(Quinze* matriz, int count);
+void libera_jogo(Quinze* matriz);
 
 /* Função randomiza valores
 
@@ -55,19 +55,3 @@ int gabarito(Quinze *matriz, Quinze *resposta, int dimensao);
 
 */
 char *retorna_valor (Quinze *matriz, int linha, int coluna);
-
-/* Função 
-
-*/
-char lerCaractere();
-
-/* Função 
-
-*/
-void ativarModoRaw();
-
-/* Função 
-
-*/
-void desativarModoRaw();
-

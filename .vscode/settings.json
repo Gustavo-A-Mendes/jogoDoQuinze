@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "quinze.h": "c",
-        "ctype.h": "c"
+        "ctype.h": "c",
+        "conio.h": "c",
+        "salvamento.h": "c"
     }
 }
