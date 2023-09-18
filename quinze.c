@@ -247,28 +247,26 @@ void movimento(Quinze *matriz, Quinze *vazio, char movimento)
     }
 }
 
-// int gabarito(Quinze *matriz, Quinze *resposta, int dimensao)
-// {
-//     int i, j;
-//     Quinze *p1, *p1_resp, *p2, *p2_resp;
-//     for (i = 0; i < dimensao; i++) {
-//         p1 = matriz;
-//         p1_resp = resposta;
-//         for (j = 0; j < dimensao; j++) {
-//             if (compara(matriz[i][j].valor, resposta[i][j].valor) != 0)
-//                 return 0;
-//         }
-//     }
+int gabarito(Quinze *matriz, Quinze *resposta, int dimensao)
+{
+    int i, j;
+    Quinze *p1 = matriz, *p1_resp = resposta, *p2, *p2_resp;
+    for (i = 0; i < dimensao; i++) {
+        p2 = p1;
+        p2_resp = p1_resp;
+        for (j = 0; j < dimensao; j++) {
+            if (compara(p2->valor, p2_resp->valor) != 0)
+                return 0;
+            
+            p2 = p2->direita;
+            p2_resp = p2_resp->direita;
+        }
 
-
-//     for (p1 = matriz; p1 != NULL; p1 = p1->baixo) {
-//         for (p2 = p1; p2 != NULL; p2 = p2->direita) {
-//             if (compara(matriz[i][j].valor, resposta[i][j].valor) != 0)
-//                 return 0;
-//         }
-//     }
-//     return 1;
-// }
+        p1 = p1->baixo;
+        p1_resp = p1_resp->baixo;
+    }
+    return 1;
+}
 
 char *retorna_valor (Quinze *matriz, int linha, int coluna)
 {   

@@ -97,17 +97,17 @@ int main(void)
         // free(vazi);
         
         
-        // // if (gabarito(jogo, resposta, dim) == 1) {
-        // //     printf("\nParabens! Vc eh top.\n");
-            
-        // //     // printf("\nJogar de novo? [S/N]\n");
-        // //     // // while(getchar() != '\n');
+        if (gabarito(jogo, resposta, dim) == 1) {
+            printf("\nParabens! Vc eh top.\n");
+            break;
+            // printf("\nJogar de novo? [S/N]\n");
+            // // while(getchar() != '\n');
 
-        // //     // resp = getchar();
-        // //     // if(toupper(resp) == 'N') break;
-        // //     // reset = 1;
-        // // }
-        // // desativarModoRaw();
+            // resp = getchar();
+            // if(toupper(resp) == 'N') break;
+            // reset = 1;
+        } else printf("nao\n");
+        // desativarModoRaw();
         
     }
     return 0;
