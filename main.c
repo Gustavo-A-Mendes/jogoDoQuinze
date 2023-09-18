@@ -23,14 +23,14 @@ int main(void)
             //     libera_jogo(jogo, i);
             //     libera_jogo(resposta, i);
             // }
-            system("cls");
+            system("clear");
 
             printf("Insira a dimensao: ");
             scanf("%d", &dim);
             jogo = cria_jogo(dim);
             resposta = cria_jogo(dim);
 
-            system("cls");
+            system("clear");
 
             randomiza(jogo, dim);
 
@@ -65,18 +65,18 @@ int main(void)
         //     break;
         // }
 
-        printf("Movimento: ");
+        // printf("Movimento: ");
         movi = getchar();
         
         if (movi == 'x') break;
         else if (movi == 'r') reset = 1;
         
-        system("cls");
         vazi = posicao_vazio(jogo, dim);
         
         if (verifica(vazi, dim, movi) && reset == 0 ) {
             movimento(jogo, vazi, dim, movi);
         }
+        system("clear");
         
         free(vazi);
         
@@ -84,12 +84,17 @@ int main(void)
         if (gabarito(jogo, resposta, dim) == 1) {
             printf("\nParabens! Vc eh top.\n");
             
-            // printf("\nJogar de novo? [S/N]\n");
-            // // while(getchar() != '\n');
+            printf("\nJogar de novo? [S/N]\n");
+            // while(getchar() != '\n');
 
-            // resp = getchar();
-            // if(toupper(resp) == 'N') break;
-            // reset = 1;
+            scanf(" %c", &resp);
+            if(toupper(resp) == 'N'){
+                break;
+            }else{
+                printf("Opcao invalida!!");
+            }
+            reset = 1;
+            
         }
         // desativarModoRaw();
         

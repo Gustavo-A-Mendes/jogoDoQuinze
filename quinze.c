@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <conio.h>
+// #include <conio.h>
 // #include <termios.h>
 // #include <unistd.h>
 #include "quinze.h"
@@ -196,6 +196,7 @@ void movimento(Quinze **matriz, Quinze *vazio, int dimensao, char movimento)
 
 int gabarito(Quinze **matriz, Quinze **resposta, int dimensao)
 {
+    // printf(":P\n");
     int i, j;
     for (i = 0; i < dimensao; i++) {
         for (j = 0; j < dimensao; j++) {
