@@ -24,7 +24,7 @@ Quinze *cria_jogo(int dimensao)
 {
     int i, j;
     
-    Quinze *celula, *p1 = NULL, *p2;
+    Quinze *celula = NULL, *p1 = NULL, *p2;
     for (i = 0; i < dimensao; i++) {
         p2 = p1;
         for (j = 0; j < dimensao; j++)
