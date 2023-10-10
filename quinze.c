@@ -4,8 +4,8 @@
 #include <string.h>
 #include <time.h>
 // #include <conio.h>
-// #include <termios.h>
-// #include <unistd.h>
+#include <termios.h>
+#include <unistd.h>
 #include "quinze.h"
 
 struct quinze
@@ -236,18 +236,18 @@ char *retorna_valor (Quinze **matriz, int linha, int coluna)
 }
 
 // Função para ativar o modo "raw" do terminal
-// void ativarModoRaw(void) {
-//     struct termios raw;
-//     tcgetattr(STDIN_FILENO, &raw);
-//     raw.c_lflag &= ~(ICANON | ECHO);
-//     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-// }
+void ativarModoRaw(void) {
+    struct termios raw;
+    tcgetattr(STDIN_FILENO, &raw);
+    raw.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
 
-// // Função para desativar o modo "raw" do terminal
-// void desativarModoRaw(void) {
-//     struct termios cooked;
-//     tcgetattr(STDIN_FILENO, &cooked);
-//     cooked.c_lflag |= (ICANON | ECHO);
-//     tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
-// }
+// Função para desativar o modo "raw" do terminal
+void desativarModoRaw(void) {
+    struct termios cooked;
+    tcgetattr(STDIN_FILENO, &cooked);
+    cooked.c_lflag |= (ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &cooked);
+}
 

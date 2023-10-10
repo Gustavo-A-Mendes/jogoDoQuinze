@@ -16,7 +16,7 @@ int main(void)
 
     while(1)
     {
-
+        
         if (reset == 1) {
             // int i;
             // for (i = 0; i < dim; i++) {
@@ -64,7 +64,7 @@ int main(void)
         //     printf("\nParabens! Vc eh top.\n");
         //     break;
         // }
-
+        ativarModoRaw();
         // printf("Movimento: ");
         movi = getchar();
         
@@ -96,7 +96,7 @@ int main(void)
             reset = 1;
             
         }
-        // desativarModoRaw();
+        desativarModoRaw();
         
     }
     int i;
