@@ -23,14 +23,14 @@ int main(void)
             //     libera_jogo(jogo, i);
             //     libera_jogo(resposta, i);
             // }
-            system("clear");
+            system("cls");
 
             printf("Insira a dimensao: ");
             scanf("%d", &dim);
             jogo = cria_jogo(dim);
             resposta = cria_jogo(dim);
 
-            system("clear");
+            system("cls");
 
             randomiza(jogo, dim);
 
@@ -76,7 +76,7 @@ int main(void)
         if (verifica(vazi, dim, movi) && reset == 0 ) {
             movimento(jogo, vazi, dim, movi);
         }
-        system("clear");
+        system("cls");
         
         free(vazi);
         
