@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 // #include <conio.h>
-#include <termios.h>
+// #include <termios.h> [Biblioteca necessaria pra jogar sem o enter]
 #include <unistd.h>
 #include "quinze.h"
 
