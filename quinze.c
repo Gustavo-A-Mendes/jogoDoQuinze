@@ -98,19 +98,43 @@ void enumera_celulas(Quinze *matriz)
     
 }
 
+void imprime_jogo(Quinze *matriz)
+{
+    char valor_cell[3];
+    Quinze *p1, *p2;
+    for (p1 = matriz; p1 != NULL; p1 = p1->abaixo)
+    {
+        printf("|");
+        for (p2 = p1; p2 != NULL; p2 = p2->direita)
+        {   
+            strcpy(valor_cell, p2->valor);
+            if (p2->direita != NULL)
+            {
+                printf("%s\t", valor_cell);
+            }
+            else
+            {
+                printf("%s|", valor_cell);
+            }
+        }
+        printf("\n");
+    }
+}
+
 void libera_jogo(Quinze* matriz)
 {
-    Quinze *p1, *p2;
-	Quinze *t;
-    for (p1=matriz; p1 != NULL; p1 = p1->abaixo)
+    Quinze *p1 = matriz, *p2 = p1;
+	Quinze *t1, *t2;
+    while (p1 != NULL)
     {
-        for (p2 = p1; p2 != NULL; p2 = p2->direita)
+        t1 = p1->abaixo;
+        while (p2 != NULL)
         {
-            t = p2->direita;
+            t2 = p2->direita;
             free(p2);		// libera memória de "p2"
-            p2 = t;			// adiciona o endereço do próximo valor no ponteiro "p2"
+            p2 = t2;		// adiciona o endereço do próximo valor no ponteiro "p2"
         }
-        
+        p1 = t1;    // adiciona o endereço do primeiro valor da próxima linha no ponteiro "p1"
     }
 }
 
@@ -269,6 +293,7 @@ int gabarito(Quinze *matriz, Quinze *resposta, int dimensao)
     return 1;
 }
 
+/*
 char *retorna_valor (Quinze *matriz, int linha, int coluna)
 {   
     Quinze *p1, *p2;
@@ -280,3 +305,4 @@ char *retorna_valor (Quinze *matriz, int linha, int coluna)
     }
     return NULL;
 }
+*/

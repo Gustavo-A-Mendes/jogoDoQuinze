@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "./savefiles/salvamento.c"
+// #include "quinze.c"
 
 
 int verifica_resposta(char *resp);
@@ -17,7 +18,6 @@ int main(void)
     Quinze *vazi;
     Quinze *jogo = NULL;
     Quinze *resposta = NULL;
-    char valor_cell[3];
     char mov[3], resp[3];
     
     
@@ -51,6 +51,7 @@ int main(void)
         }
         if (reset == 1) {
 
+            system("cls");
             libera_jogo(jogo);
             libera_jogo(resposta);
             printf("Insira a dimensao: ");
@@ -71,24 +72,7 @@ int main(void)
         }
 
         printf("Aperte 'r' para reiniciar, ou 'x' para fechar\n\n");
-        Quinze *p1, *p2;
-        for (p1 = jogo; p1 != NULL; p1 = p1->abaixo)
-        {
-            printf("|");
-            for (p2 = p1; p2 != NULL; p2 = p2->direita)
-            {   
-                strcpy(valor_cell, p2->valor);
-                if (p2->direita != NULL)
-                {
-                    printf("%s\t", valor_cell);
-                }
-                else
-                {
-                    printf("%s|", valor_cell);
-                }
-            }
-            printf("\n");
-        }
+        imprime_jogo(jogo);
 
         printf("Movimento: ");
         movi = verifica_resposta(mov);
@@ -102,13 +86,13 @@ int main(void)
                     if (savefile == NULL) exit(1);
 
                     salva_jogo(savefile, jogo, dim);
+                    fclose(savefile);
                     break;
                 } else if (respo == 'N') {
                     break;
                 } else {
                     printf("\nInsira um valor valido.\n");
                 }
-                fclose(savefile);
             }
             break;
 
@@ -116,13 +100,6 @@ int main(void)
         system("cls");
 
         vazi = posicao_vazio(jogo);
-        // printf("linha: %d\n", vazi->lin);
-        // printf("coluna: %d\n", vazi->col);
-        // printf("valor: %s\n", vazi->valor);
-        // if (vazi->cima != NULL) printf("cima: %s\n", vazi->cima->valor);
-        // if (vazi->esquerda != NULL) printf("esquerda: %s\n", vazi->esquerda->valor);
-        // if (vazi->direita != NULL) printf("direita: %s\n", vazi->direita->valor);
-        // if (vazi->abaixo != NULL) printf("abaixo: %s\n", vazi->abaixo->valor);
         
         if (verifica(vazi, movi)) {
             movimento(jogo, vazi, movi);
@@ -132,8 +109,10 @@ int main(void)
             printf("\nParabens! Vc eh top.\n");
 
             printf("\nJogar de novo? [S/N]\n");
-            if (reiniciar(resp) == 1)
+            if (reiniciar(resp) == 1) {
                 reset = 1;
+
+            }
             else {
                 savefile = fopen("./savefiles/save.txt", "wt");
                 if (savefile == NULL) exit(1);

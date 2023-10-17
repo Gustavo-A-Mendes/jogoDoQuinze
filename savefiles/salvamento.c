@@ -3,7 +3,6 @@
 #include "../quinze.c"
 #include "salvamento.h"
 
-
 int has_save(FILE* fl)
 {
     int dimensao;
@@ -62,7 +61,7 @@ void salva_jogo(FILE *fl, Quinze *matriz, int dimensao)
             if (p2->direita != NULL)
                 fprintf(fl, "\t");
             else
-                fprintf(fl, "\n");
+                fprintf(fl, "\n");            
         }
     }
 }
